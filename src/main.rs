@@ -1,3 +1,6 @@
+use xsos::Mark;
+
 fn main() {
-    println!("Hello, world!");
+    println!("{:?}", Mark::X.swap());
+    println!("{:?}", Mark::O.swap());
 }
