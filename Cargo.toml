@@ -1,0 +1,5 @@
+[package]
+name = "xsos"
+version = "0.1.0"
+authors = ["Dwayne Crooks <me@dwaynecrooks.com>"]
+edition = "2018"
