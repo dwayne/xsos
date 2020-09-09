@@ -1,6 +1,6 @@
 use xsos::Mark;
 
 fn main() {
-    println!("{:?}", Mark::X.swap());
-    println!("{:?}", Mark::O.swap());
+    println!("{:?}", Mark::X.next());
+    println!("{:?}", Mark::O.next());
 }
