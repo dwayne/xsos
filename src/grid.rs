@@ -6,6 +6,7 @@ pub const NCELLS: usize = SIZE * SIZE;
 pub type Position = (usize, usize);
 pub type Cell = Option<Mark>;
 
+#[derive(Clone)]
 pub struct Grid {
     cells: [Cell; NCELLS]
 }
@@ -78,5 +79,21 @@ mod tests {
             &None, &Some(Mark::O), &None,
             &None, &None, &None
         ]);
+    }
+
+    #[test]
+    fn a_grid_can_be_cloned() {
+        let mut grid = Grid::new();
+
+        grid.set((0, 0), Mark::X);
+
+        let mut clone_of_grid = grid.clone();
+
+        clone_of_grid.set((1, 1), Mark::O);
+
+        assert!(!clone_of_grid.is_available((0, 0)));
+        assert!(!clone_of_grid.is_available((1, 1)));
+        assert!(grid.is_available((1, 1)));
+
     }
 }

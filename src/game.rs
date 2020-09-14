@@ -2,12 +2,14 @@ use crate::mark::Mark;
 use crate::grid::{ Grid, Position };
 use crate::referee::{ self, Outcome };
 
+#[derive(Clone)]
 pub struct Game {
     grid: Grid,
     turn: Mark,
     state: State
 }
 
+#[derive(Clone, Copy)]
 enum State {
     Start,
     Play(Position),
@@ -161,5 +163,24 @@ mod tests {
         game.play((1, 1));
 
         assert_eq!(game.play((1, 1)), Some(Error::Unavailable));
+    }
+
+    #[test]
+    fn a_game_can_be_cloned() {
+        let mut game = Game::new(Mark::X);
+
+        game.play((1, 1));
+        game.play((0, 2));
+        game.play((2, 0));
+        game.play((1, 2));
+        game.play((2, 2));
+        game.play((2, 1));
+
+        let mut clone_of_game = game.clone();
+
+        clone_of_game.play((0, 0));
+
+        assert!(game.is_playing());
+        assert!(clone_of_game.is_game_over());
     }
 }
