@@ -1,4 +1,4 @@
-use xsos::Mark;
+use xsos::mark::Mark;
 
 fn main() {
     println!("{:?}", Mark::X.next());
