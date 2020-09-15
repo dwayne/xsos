@@ -63,6 +63,10 @@ impl Game {
         }
     }
 
+    pub fn available_positions(&self) -> Vec<Position> {
+        self.grid.available_positions()
+    }
+
     pub fn is_playing(&self) -> bool {
         !self.is_game_over()
     }
