@@ -1,6 +1,6 @@
-use xsos::mark::Mark;
+use structopt::StructOpt;
+use xsos::cli::{ self, Config };
 
 fn main() {
-    println!("{:?}", Mark::X.next());
-    println!("{:?}", Mark::O.next());
+    cli::run(Config::from_args())
 }
