@@ -1,6 +1,13 @@
+use rand::thread_rng;
+use rand::seq::SliceRandom;
 use crate::grid::Position;
 use crate::game::Game;
 use crate::referee::Outcome;
+
+pub fn random_move(game: &Game) -> Position {
+    let mut rng = thread_rng();
+    moves(game).choose(&mut rng).cloned().unwrap()
+}
 
 pub fn moves(game: &Game) -> Vec<Position> {
     maximize(&mut game.clone(), 0).positions

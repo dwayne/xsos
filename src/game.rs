@@ -31,6 +31,16 @@ impl Game {
         }
     }
 
+    pub fn renew(&mut self) {
+        self.grid = Grid::new();
+
+        if let State::GameOver(_, Outcome::Squash) = self.state {
+            self.turn = self.turn.next();
+        }
+
+        self.state = State::Start;
+    }
+
     pub fn play(&mut self, pos: Position) -> Option<Error> {
         match self.state {
             State::Start | State::Play(_) => {
@@ -73,6 +83,10 @@ impl Game {
 
     pub fn is_game_over(&self) -> bool {
         matches!(self.state, State::GameOver(..))
+    }
+
+    pub fn turn(&self) -> Mark {
+        self.turn
     }
 
     pub fn outcome(&self) -> Option<Outcome> {
