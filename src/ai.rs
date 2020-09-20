@@ -10,7 +10,12 @@ pub fn random_move(game: &Game) -> Position {
 }
 
 pub fn moves(game: &Game) -> Vec<Position> {
-    maximize(&mut game.clone(), 0).positions
+    let available_positions = game.available_positions();
+
+    match available_positions.len() {
+        0 | 1 | 9 => available_positions,
+        _ => maximize(&mut game.clone(), 0).positions
+    }
 }
 
 fn maximize(game: &mut Game, depth: u32) -> Value {
