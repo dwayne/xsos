@@ -1,3 +1,5 @@
+use std::fmt;
+
 #[derive(Debug, PartialEq, Clone, Copy)]
 pub enum Mark {
     X,
@@ -9,6 +11,15 @@ impl Mark {
         match self {
             Self::X => Self::O,
             Self::O => Self::X
+        }
+    }
+}
+
+impl fmt::Display for Mark {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Self::X => write!(f, "x"),
+            Self::O => write!(f, "o")
         }
     }
 }

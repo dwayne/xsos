@@ -46,6 +46,12 @@ pub enum Player {
     Computer
 }
 
+impl Player {
+    pub fn count_humans(players: &[Self]) -> u32 {
+        players.iter().fold(0, |sum, &p| if p == Player::Human { sum + 1 } else { sum })
+    }
+}
+
 fn parse_player(src: &str) -> Result<Player, &'static str> {
     match src {
         "human" => Ok(Player::Human),

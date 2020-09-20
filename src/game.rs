@@ -85,6 +85,10 @@ impl Game {
         matches!(self.state, State::GameOver(..))
     }
 
+    pub fn grid(&self) -> &Grid {
+        &self.grid
+    }
+
     pub fn turn(&self) -> Mark {
         self.turn
     }
