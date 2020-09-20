@@ -1,9 +1,8 @@
-use std::io::Write;
 use structopt::StructOpt;
-use crate::ai;
-use crate::game::Game;
 use crate::mark::Mark;
-use crate::referee::Outcome;
+
+mod noninteractive;
+mod interactive;
 
 #[derive(StructOpt, Debug, PartialEq, Clone, Copy)]
 pub struct Config {
@@ -42,7 +41,7 @@ pub struct Config {
 }
 
 #[derive(Debug, PartialEq, Clone, Copy)]
-enum Player {
+pub enum Player {
     Human,
     Computer
 }
@@ -65,45 +64,9 @@ fn parse_mark(src: &str) -> Result<Mark, &'static str> {
 
 pub fn run(Config { x, o, first, rounds }: Config) {
     match (x, o) {
-        (Player::Computer, Player::Computer) => noninteractive_run(first, rounds),
-        _ => interactive_run(first, x, o)
+        (Player::Computer, Player::Computer) => noninteractive::run(first, rounds),
+        _ => interactive::run(first, x, o)
     }
-}
-
-fn noninteractive_run(first: Mark, rounds: u8) {
-    let mut game = Game::new(first);
-
-    for _ in 0..rounds {
-        play_one_round(&mut game);
-    }
-
-    if rounds > 0 {
-        println!("");
-    }
-}
-
-fn play_one_round(game: &mut Game) {
-    loop {
-        game.play(ai::random_move(game));
-
-        if let Some(outcome) = game.outcome() {
-            handle_game_over(outcome, game.turn());
-            game.renew();
-            break;
-        }
-    }
-}
-
-fn handle_game_over(outcome: Outcome, winner: Mark) {
-    match outcome {
-        Outcome::Win => print!("{:?}", winner),
-        Outcome::Squash => print!(".")
-    }
-    std::io::stdout().flush().unwrap();
-}
-
-fn interactive_run(_first: Mark, _x: Player, _o: Player) {
-    todo!()
 }
 
 #[cfg(test)]
