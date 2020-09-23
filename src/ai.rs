@@ -10,10 +10,10 @@ pub fn random_move(game: &Game) -> Position {
 }
 
 pub fn moves(game: &Game) -> Vec<Position> {
-    let available_positions = game.available_positions();
+    let positions = game.available_positions().collect::<Vec<_>>();
 
-    match available_positions.len() {
-        0 | 1 | 9 => available_positions,
+    match positions.len() {
+        0 | 1 | 9 => positions,
         _ => maximize(&mut game.clone(), 0).positions
     }
 }

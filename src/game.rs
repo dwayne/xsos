@@ -1,5 +1,5 @@
 use crate::mark::Mark;
-use crate::grid::{ Grid, Position };
+use crate::grid::{ AvailablePositions, Grid, Position };
 use crate::referee::{ self, Outcome };
 
 #[derive(Clone)]
@@ -73,7 +73,7 @@ impl Game {
         }
     }
 
-    pub fn available_positions(&self) -> Vec<Position> {
+    pub fn available_positions(&self) -> AvailablePositions {
         self.grid.available_positions()
     }
 

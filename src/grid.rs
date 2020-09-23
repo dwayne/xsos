@@ -1,7 +1,7 @@
 use crate::mark::Mark;
 
-pub const SIZE: usize = 3;
-pub const NCELLS: usize = SIZE * SIZE;
+const SIZE: usize = 3;
+const NCELLS: usize = SIZE * SIZE;
 
 pub type Position = (usize, usize);
 pub type Cell = Option<Mark>;
@@ -21,21 +21,15 @@ impl Grid {
     }
 
     pub fn set(&mut self, pos: Position, mark: Mark) {
-        self.cells[Self::index(pos)] = Some(mark);
+        self.cells[to_index(pos)] = Some(mark);
     }
 
     pub fn is_available(&self, pos: Position) -> bool {
-        self.cells[Self::index(pos)].is_none()
+        self.cells[to_index(pos)].is_none()
     }
 
-    pub fn available_positions(&self) -> Vec<Position> {
-        // FIXME: Return an iterator.
-
-        self.cells
-            .iter()
-            .enumerate()
-            .filter_map(|(i, cell)| if cell.is_none() { Some(Self::pos(i)) } else { None })
-            .collect()
+    pub fn available_positions(&self) -> AvailablePositions {
+        AvailablePositions::new(&self.cells)
     }
 
     pub fn cells(&self) -> Vec<&Cell> {
@@ -43,14 +37,42 @@ impl Grid {
 
         self.cells.iter().collect()
     }
+}
 
-    fn index((r, c): Position) -> usize {
-        r * SIZE + c
-    }
+pub struct AvailablePositions<'a> {
+    cells: &'a [Cell],
+    index: usize
+}
 
-    fn pos(index: usize) -> Position {
-        (index / SIZE, index % SIZE)
+impl<'a> AvailablePositions<'a> {
+    fn new(cells: &'a [Cell]) -> Self {
+        Self { cells, index: 0 }
     }
+}
+
+impl Iterator for AvailablePositions<'_> {
+    type Item = Position;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        while self.index < NCELLS && self.cells[self.index].is_some() {
+            self.index += 1;
+        }
+
+        if self.index == NCELLS {
+            None
+        } else {
+            self.index += 1;
+            Some(to_pos(self.index - 1))
+        }
+    }
+}
+
+fn to_index((r, c): Position) -> usize {
+    r * SIZE + c
+}
+
+fn to_pos(index: usize) -> Position {
+    (index / SIZE, index % SIZE)
 }
 
 #[cfg(test)]

@@ -85,7 +85,7 @@ fn handle_game_over(outcome: Outcome, player: Player, humans: u32, game: &Game) 
 }
 
 fn first_available_position(grid: &Grid) -> Position {
-    grid.available_positions()[0]
+    grid.available_positions().next().unwrap()
 }
 
 // INPUT
