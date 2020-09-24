@@ -10,7 +10,7 @@ pub fn random_move(game: &Game) -> Position {
 }
 
 pub fn moves(game: &Game) -> Vec<Position> {
-    let positions = game.available_positions().collect::<Vec<_>>();
+    let positions = game.grid().available_positions().collect::<Vec<_>>();
 
     match positions.len() {
         0 | 1 | 9 => positions,
@@ -22,7 +22,7 @@ fn maximize(game: &mut Game, depth: u32) -> Value {
     if game.is_playing() {
         let mut value = None;
 
-        for pos in game.available_positions() {
+        for pos in game.grid().available_positions() {
             let mut next_game = game.clone();
 
             next_game.play(pos);
@@ -46,7 +46,7 @@ fn minimize(game: &mut Game, depth: u32) -> Value {
     if game.is_playing() {
         let mut value = None;
 
-        for pos in game.available_positions() {
+        for pos in game.grid().available_positions() {
             let mut next_game = game.clone();
 
             next_game.play(pos);

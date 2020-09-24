@@ -171,7 +171,7 @@ fn format_turn(humans: u32, mark: Mark) -> String {
 }
 
 fn format_grid(grid: &Grid) -> String {
-    let cells = grid.cells();
+    let cells = grid.cells().collect::<Vec<_>>();
     let sep = "---+---+---";
 
     format!("{}\n{}\n{}\n{}\n{}",

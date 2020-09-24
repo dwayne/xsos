@@ -32,10 +32,8 @@ impl Grid {
         AvailablePositions::new(&self.cells)
     }
 
-    pub fn cells(&self) -> Vec<&Cell> {
-        // FIXME: Return an iterator.
-
-        self.cells.iter().collect()
+    pub fn cells(&self) -> Cells {
+        Cells::new(&self.cells)
     }
 }
 
@@ -67,6 +65,30 @@ impl Iterator for AvailablePositions<'_> {
     }
 }
 
+pub struct Cells<'a> {
+    cells: &'a [Cell],
+    index: usize
+}
+
+impl<'a> Cells<'a> {
+    fn new(cells: &'a [Cell]) -> Self {
+        Self { cells, index: 0 }
+    }
+}
+
+impl<'a> Iterator for Cells<'a> {
+    type Item = &'a Cell;
+
+    fn next(&mut self) -> Option<Self::Item> {
+        if self.index < NCELLS {
+            self.index += 1;
+            Some(&self.cells[self.index - 1])
+        } else {
+            None
+        }
+    }
+}
+
 fn to_index((r, c): Position) -> usize {
     r * SIZE + c
 }
@@ -90,13 +112,13 @@ mod tests {
         assert!(!grid.is_available((0, 0)));
         assert!(!grid.is_available((1, 1)));
 
-        assert_eq!(grid.available_positions(), vec![
+        assert_eq!(grid.available_positions().collect::<Vec<_>>(), vec![
             (0, 1), (0, 2),
             (1, 0), (1, 2),
             (2, 0), (2, 1), (2, 2)
         ]);
 
-        assert_eq!(grid.cells(), vec![
+        assert_eq!(grid.cells().collect::<Vec<_>>(), vec![
             &Some(Mark::X), &None, &None,
             &None, &Some(Mark::O), &None,
             &None, &None, &None
@@ -116,6 +138,5 @@ mod tests {
         assert!(!clone_of_grid.is_available((0, 0)));
         assert!(!clone_of_grid.is_available((1, 1)));
         assert!(grid.is_available((1, 1)));
-
     }
 }

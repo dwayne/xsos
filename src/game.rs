@@ -1,5 +1,5 @@
 use crate::mark::Mark;
-use crate::grid::{ AvailablePositions, Grid, Position };
+use crate::grid::{ Grid, Position };
 use crate::referee::{ self, Outcome };
 
 #[derive(Clone)]
@@ -73,10 +73,6 @@ impl Game {
         }
     }
 
-    pub fn available_positions(&self) -> AvailablePositions {
-        self.grid.available_positions()
-    }
-
     pub fn is_playing(&self) -> bool {
         !self.is_game_over()
     }
@@ -118,7 +114,7 @@ mod tests {
 
         assert!(game.is_playing());
         assert_eq!(game.turn, Mark::O);
-        assert_eq!(game.grid.cells(), vec![
+        assert_eq!(game.grid().cells().collect::<Vec<_>>(), vec![
             &None, &None, &Some(Mark::O),
             &None, &Some(Mark::X), &None,
             &Some(Mark::X), &None, &None
@@ -139,7 +135,7 @@ mod tests {
 
         assert!(game.is_game_over());
         assert_eq!(game.turn, Mark::X);
-        assert_eq!(game.grid.cells(), vec![
+        assert_eq!(game.grid().cells().collect::<Vec<_>>(), vec![
             &Some(Mark::X), &None, &Some(Mark::O),
             &None, &Some(Mark::X), &Some(Mark::O),
             &Some(Mark::X), &Some(Mark::O), &Some(Mark::X)
@@ -163,7 +159,7 @@ mod tests {
 
         assert!(game.is_game_over());
         assert_eq!(game.turn, Mark::O);
-        assert_eq!(game.grid.cells(), vec![
+        assert_eq!(game.grid().cells().collect::<Vec<_>>(), vec![
             &Some(Mark::X), &Some(Mark::O), &Some(Mark::X),
             &Some(Mark::X), &Some(Mark::O), &Some(Mark::O),
             &Some(Mark::O), &Some(Mark::X), &Some(Mark::O)
