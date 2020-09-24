@@ -16,7 +16,7 @@ enum State {
     GameOver(Position, Outcome)
 }
 
-#[derive(Debug, PartialEq)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum Error {
     OutOfBounds,
     Unavailable
@@ -42,20 +42,19 @@ impl Game {
     }
 
     pub fn play(&mut self, pos: Position) -> Option<Error> {
-        match self.state {
-            State::Start | State::Play(_) => {
-                if Grid::in_bounds(pos) {
-                    if self.grid.is_available(pos) {
-                        self.unchecked_play(pos);
-                        None
-                    } else {
-                        Some(Error::Unavailable)
-                    }
+        if self.is_playing() {
+            if Grid::in_bounds(pos) {
+                if self.grid.is_available(pos) {
+                    self.unchecked_play(pos);
+                    None
                 } else {
-                    Some(Error::OutOfBounds)
+                    Some(Error::Unavailable)
                 }
-            },
-            State::GameOver(..) => None
+            } else {
+                Some(Error::OutOfBounds)
+            }
+        } else {
+            None
         }
     }
 
@@ -103,7 +102,7 @@ mod tests {
     use super::*;
 
     #[test]
-    fn game_after_3_plays() {
+    fn after_3_plays() {
         let mut game = Game::new(Mark::X);
 
         assert!(game.is_playing());
@@ -122,7 +121,7 @@ mod tests {
     }
 
     #[test]
-    fn game_when_x_wins() {
+    fn when_x_wins() {
         let mut game = Game::new(Mark::X);
 
         game.play((1, 1));
@@ -144,7 +143,7 @@ mod tests {
     }
 
     #[test]
-    fn game_when_o_squashes() {
+    fn when_o_squashes() {
         let mut game = Game::new(Mark::O);
 
         game.play((1, 1));
@@ -168,14 +167,14 @@ mod tests {
     }
 
     #[test]
-    fn game_when_position_is_out_of_bounds() {
+    fn when_position_is_out_of_bounds() {
         let mut game = Game::new(Mark::X);
 
         assert_eq!(game.play((0, 4)), Some(Error::OutOfBounds));
     }
 
     #[test]
-    fn game_when_position_is_unavailable() {
+    fn when_position_is_unavailable() {
         let mut game = Game::new(Mark::X);
 
         game.play((1, 1));
@@ -184,7 +183,7 @@ mod tests {
     }
 
     #[test]
-    fn a_game_can_be_cloned() {
+    fn clone() {
         let mut game = Game::new(Mark::X);
 
         game.play((1, 1));
@@ -198,7 +197,7 @@ mod tests {
 
         clone_of_game.play((0, 0));
 
-        assert!(game.is_playing());
         assert!(clone_of_game.is_game_over());
+        assert!(game.is_playing());
     }
 }
