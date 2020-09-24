@@ -102,13 +102,12 @@ mod tests {
     use super::*;
 
     #[test]
-    fn grid() {
+    fn usage() {
         let mut grid = Grid::new();
 
         grid.set((0, 0), Mark::X);
         grid.set((1, 1), Mark::O);
 
-        assert!(grid.is_available((0, 1)));
         assert!(!grid.is_available((0, 0)));
         assert!(!grid.is_available((1, 1)));
 
@@ -126,7 +125,7 @@ mod tests {
     }
 
     #[test]
-    fn a_grid_can_be_cloned() {
+    fn clone() {
         let mut grid = Grid::new();
 
         grid.set((0, 0), Mark::X);
