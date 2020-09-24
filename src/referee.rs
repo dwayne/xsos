@@ -1,16 +1,16 @@
 use crate::mark::Mark;
 use crate::grid::Grid;
 
-#[derive(Debug, PartialEq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum Outcome {
     Win,
     Squash
 }
 
 pub fn evaluate(grid: &Grid, mark: Mark) -> Option<Outcome> {
-    if is_win(&grid, mark) {
+    if is_win(grid, mark) {
         Some(Outcome::Win)
-    } else if is_squash(&grid) {
+    } else if is_squash(grid) {
         Some(Outcome::Squash)
     } else {
         None
@@ -19,13 +19,13 @@ pub fn evaluate(grid: &Grid, mark: Mark) -> Option<Outcome> {
 
 fn is_win(grid: &Grid, mark: Mark) -> bool {
     let cells = grid.cells().collect::<Vec<_>>();
-    let t = Some(mark);
+    let c = Some(mark);
 
-    ARRANGEMENTS.iter().any(|&(i, j, k)| (cells[i], cells[j], cells[k]) == (&t, &t, &t))
+    ARRANGEMENTS.iter().any(|&(i, j, k)| (cells[i], cells[j], cells[k]) == (&c, &c, &c))
 }
 
 fn is_squash(grid: &Grid) -> bool {
-    grid.cells().all(|cell| cell.is_some())
+    grid.cells().all(Option::is_some)
 }
 
 const ARRANGEMENTS: [(usize, usize, usize); 8] = [
