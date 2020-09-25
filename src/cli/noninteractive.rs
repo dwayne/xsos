@@ -1,4 +1,5 @@
 use std::io::Write;
+
 use crate::ai;
 use crate::game::Game;
 use crate::mark::Mark;
@@ -30,7 +31,7 @@ fn play_one_round(game: &mut Game) {
 
 fn handle_game_over(outcome: Outcome, winner: Mark) {
     match outcome {
-        Outcome::Win => print!("{:?}", winner),
+        Outcome::Win => print!("{}", winner),
         Outcome::Squash => print!(".")
     }
     std::io::stdout().flush().unwrap();

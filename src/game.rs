@@ -1,5 +1,5 @@
-use crate::mark::Mark;
 use crate::grid::{ Grid, Position };
+use crate::mark::Mark;
 use crate::referee::{ self, Outcome };
 
 #[derive(Clone)]

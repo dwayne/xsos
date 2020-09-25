@@ -1,8 +1,9 @@
 use structopt::StructOpt;
+
 use crate::mark::Mark;
 
-mod noninteractive;
 mod interactive;
+mod noninteractive;
 
 #[derive(StructOpt, Debug, PartialEq, Clone, Copy)]
 pub struct Config {
@@ -40,7 +41,7 @@ pub struct Config {
     rounds: u8
 }
 
-#[derive(Debug, PartialEq, Clone, Copy)]
+#[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum Player {
     Human,
     Computer
@@ -48,30 +49,33 @@ pub enum Player {
 
 impl Player {
     pub fn count_humans(players: &[Self]) -> u32 {
-        players.iter().fold(0, |sum, &p| if p == Player::Human { sum + 1 } else { sum })
+        players.iter().fold(0, |sum, &p| if let Player::Human = p { sum + 1 } else { sum })
     }
 }
 
 fn parse_player(src: &str) -> Result<Player, &'static str> {
-    match src {
-        "human" => Ok(Player::Human),
-        "computer" => Ok(Player::Computer),
+    match src.to_ascii_lowercase().as_ref() {
+        "h" | "human" => Ok(Player::Human),
+        "c" | "computer" => Ok(Player::Computer),
         _ => Err("expected human|computer")
     }
 }
 
 fn parse_mark(src: &str) -> Result<Mark, &'static str> {
-    match src {
+    match src.to_ascii_lowercase().as_ref() {
         "x" => Ok(Mark::X),
         "o" => Ok(Mark::O),
         _ => Err("expected x|o")
     }
 }
 
-pub fn run(Config { x, o, first, rounds }: Config) {
-    match (x, o) {
-        (Player::Computer, Player::Computer) => noninteractive::run(first, rounds),
-        _ => interactive::run(first, x, o)
+pub fn run() {
+    let Config { x, o, first, rounds } = Config::from_args();
+
+    if let (Player::Computer, Player::Computer) = (x, o) {
+        noninteractive::run(first, rounds);
+    } else {
+        interactive::run(first, x, o);
     }
 }
 
@@ -89,11 +93,11 @@ mod tests {
                 first: Mark::X,
                 rounds: 25
             }
-        )
+        );
     }
 
     #[test]
-    fn o_plays_first() {
+    fn let_o_play_first() {
         assert_eq!(
             Config::from_iter(&["", "--first", "o"]),
             Config {
@@ -102,11 +106,11 @@ mod tests {
                 first: Mark::O,
                 rounds: 25
             }
-        )
+        );
     }
 
     #[test]
-    fn x_as_computer_o_as_human() {
+    fn let_computer_play_with_x_and_human_play_with_o() {
         assert_eq!(
             Config::from_iter(&["", "-x", "computer", "-o", "human"]),
             Config {
@@ -115,7 +119,29 @@ mod tests {
                 first: Mark::X,
                 rounds: 25
             }
-        )
+        );
+
+        // Shorthand
+        assert_eq!(
+            Config::from_iter(&["", "-x", "c", "-o", "h"]),
+            Config {
+                x: Player::Computer,
+                o: Player::Human,
+                first: Mark::X,
+                rounds: 25
+            }
+        );
+
+        // Case insensitive
+        assert_eq!(
+            Config::from_iter(&["", "-x", "cOmPuTeR", "-o", "H"]),
+            Config {
+                x: Player::Computer,
+                o: Player::Human,
+                first: Mark::X,
+                rounds: 25
+            }
+        );
     }
 
     #[test]
@@ -128,7 +154,7 @@ mod tests {
                 first: Mark::X,
                 rounds: 25
             }
-        )
+        );
     }
 
     #[test]
@@ -141,6 +167,6 @@ mod tests {
                 first: Mark::X,
                 rounds: 50
             }
-        )
+        );
     }
 }

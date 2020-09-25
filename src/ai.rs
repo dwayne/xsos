@@ -1,7 +1,8 @@
-use rand::thread_rng;
 use rand::seq::SliceRandom;
-use crate::grid::Position;
+use rand::thread_rng;
+
 use crate::game::Game;
+use crate::grid::Position;
 use crate::referee::Outcome;
 
 pub fn random_move(game: &Game) -> Position {

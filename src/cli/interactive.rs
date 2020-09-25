@@ -1,4 +1,5 @@
 use std::io::Write;
+
 use crate::ai;
 use crate::cli::Player;
 use crate::game::{ Error, Game };
@@ -84,25 +85,16 @@ fn handle_game_over(outcome: Outcome, player: Player, humans: u32, game: &Game) 
     println!("{}", format_grid(game.grid()));
 }
 
-fn first_available_position(grid: &Grid) -> Position {
-    grid.available_positions().next().unwrap()
-}
-
 // INPUT
 
 fn read_continue() -> bool {
     let input = read_input("Do you want to continue playing? (Y/n) ");
-    let input = parse_yes_no(&input);
 
-    match &input[..] {
+    match input.to_ascii_lowercase().as_ref() {
         "" | "y" | "yes" => true,
         "n" | "no" => false,
         _ => read_continue()
     }
-}
-
-fn parse_yes_no(s: &str) -> String {
-    s.to_ascii_lowercase()
 }
 
 fn read_position(grid: &Grid, show_hint: bool) -> Position {
@@ -135,6 +127,10 @@ fn parse_position(s: &str) -> Option<Position> {
         },
         _ => None
     }
+}
+
+fn first_available_position(grid: &Grid) -> Position {
+    grid.available_positions().next().unwrap()
 }
 
 fn read_input(prompt: &str) -> String {
@@ -195,5 +191,5 @@ fn format_cell(cell: &Cell) -> String {
 }
 
 fn format_position((r, c): Position) -> String {
-    format!("({}, {})", r+1, c+1)
+    format!("({}, {})", r + 1, c + 1)
 }
