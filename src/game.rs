@@ -11,9 +11,8 @@ pub struct Game {
 
 #[derive(Clone, Copy)]
 enum State {
-    Start,
-    Play(Position),
-    GameOver(Position, Outcome)
+    Play,
+    GameOver(Outcome)
 }
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
@@ -27,18 +26,18 @@ impl Game {
         Self {
             grid: Grid::new(),
             turn: first,
-            state: State::Start
+            state: State::Play
         }
     }
 
     pub fn renew(&mut self) {
         self.grid = Grid::new();
 
-        if let State::GameOver(_, Outcome::Squash) = self.state {
+        if let State::GameOver(Outcome::Squash) = self.state {
             self.turn = self.turn.next();
         }
 
-        self.state = State::Start;
+        self.state = State::Play;
     }
 
     pub fn play(&mut self, pos: Position) -> Option<Error> {
@@ -64,20 +63,20 @@ impl Game {
         match referee::evaluate(&self.grid, self.turn) {
             None => {
                 self.turn = self.turn.next();
-                self.state = State::Play(pos);
+                self.state = State::Play;
             },
             Some(outcome) => {
-                self.state = State::GameOver(pos, outcome);
+                self.state = State::GameOver(outcome);
             }
         }
     }
 
     pub fn is_playing(&self) -> bool {
-        !self.is_game_over()
+        matches!(self.state, State::Play)
     }
 
     pub fn is_game_over(&self) -> bool {
-        matches!(self.state, State::GameOver(..))
+        !self.is_playing()
     }
 
     pub fn grid(&self) -> &Grid {
@@ -89,7 +88,7 @@ impl Game {
     }
 
     pub fn outcome(&self) -> Option<Outcome> {
-        if let State::GameOver(_, outcome) = self.state {
+        if let State::GameOver(outcome) = self.state {
             Some(outcome)
         } else {
             None

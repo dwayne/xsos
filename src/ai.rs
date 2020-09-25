@@ -14,112 +14,60 @@ pub fn moves(game: &Game) -> Vec<Position> {
 
     match positions.len() {
         0 | 1 | 9 => positions,
-        _ => maximize(&mut game.clone(), 0).positions
+        _ => find_best_moves(&mut game.clone())
     }
 }
 
-fn maximize(game: &mut Game, depth: u32) -> Value {
-    if game.is_playing() {
-        let mut value = None;
+fn find_best_moves(game: &mut Game) -> Vec<Position> {
+    if let None = game.outcome() {
+        let mut value = i8::MIN;
+        let mut positions = Vec::new();
 
         for pos in game.grid().available_positions() {
             let mut next_game = game.clone();
 
             next_game.play(pos);
 
-            let mut next_value = minimize(&mut next_game, depth + 1);
-            next_value.positions = vec![pos];
+            let next_value = negamax(&mut next_game, -1);
 
-            value = match value {
-                None => Some(next_value),
-                Some(v) => Some(v.max(next_value))
+            if next_value > value {
+                value = next_value;
+                positions.clear();
+                positions.push(pos);
+            } else if next_value == value {
+                positions.push(pos);
             }
         }
 
-        value.unwrap()
+        positions
     } else {
-        Value::new(min_score(game), depth)
+        Vec::new()
     }
 }
 
-fn minimize(game: &mut Game, depth: u32) -> Value {
-    if game.is_playing() {
-        let mut value = None;
+fn negamax(game: &mut Game, color: i8) -> i8 {
+    match game.outcome() {
+        None => {
+            let mut value = i8::MIN;
 
-        for pos in game.grid().available_positions() {
-            let mut next_game = game.clone();
+            for pos in game.grid().available_positions() {
+                let mut next_game = game.clone();
 
-            next_game.play(pos);
+                next_game.play(pos);
 
-            let mut next_value = maximize(&mut next_game, depth + 1);
-            next_value.positions = vec![pos];
-
-            value = match value {
-                None => Some(next_value),
-                Some(v) => Some(v.min(next_value))
+                value = std::cmp::max(value, color * negamax(&mut next_game, -color));
             }
-        }
 
-        value.unwrap()
-    } else {
-        Value::new(max_score(game), depth)
+            color * value
+        },
+        Some(outcome) => -(color * score(outcome))
     }
 }
 
-fn max_score(game: &Game) -> i32 {
-    match game.outcome().unwrap() {
+fn score(outcome: Outcome) -> i8 {
+    match outcome {
         Outcome::Win => 2,
         Outcome::Squash => 1
-    }
-}
-
-fn min_score(game: &Game) -> i32 {
-    -max_score(game)
-}
-
-struct Value {
-    score: i32,
-    depth: u32,
-    positions: Vec<Position>
-}
-
-impl Value {
-    pub fn new(score: i32, depth: u32) -> Self {
-        Self { score, depth, positions: Vec::new() }
-    }
-
-    pub fn max(self, other: Self) -> Self {
-        if self.score > other.score {
-            self
-        } else if other.score > self.score {
-            other
-        } else if self.depth < other.depth {
-            self
-        } else if other.depth < self.depth {
-            other
-        } else {
-            Self {
-                positions: vec![self.positions, other.positions].concat(),
-                ..self
-            }
-        }
-    }
-
-    pub fn min(self, other: Self) -> Self {
-        if self.score < other.score {
-            self
-        } else if other.score < self.score {
-            other
-        } else if self.depth < other.depth {
-            self
-        } else if other.depth < self.depth {
-            other
-        } else {
-            Self {
-                positions: vec![self.positions, other.positions].concat(),
-                ..self
-            }
-        }
     }
 }
 
@@ -129,7 +77,7 @@ mod tests {
     use crate::mark::Mark;
 
     #[test]
-    fn it_finds_the_blocking_position_to_avoid_losing() {
+    fn it_finds_the_blocking_move_to_avoid_losing() {
         let mut game = Game::new(Mark::X);
 
         game.play((0, 0));
@@ -140,18 +88,18 @@ mod tests {
     }
 
     #[test]
-    fn it_gives_up_when_losing_is_inevitable() {
+    fn it_has_no_good_moves_since_every_position_is_losing() {
         let mut game = Game::new(Mark::X);
 
         game.play((0, 0));
         game.play((0, 1));
         game.play((1, 1));
 
-        assert_eq!(moves(&game), vec![(0, 2), (1, 0), (1, 2), (2, 0), (2, 1)]);
+        assert_eq!(moves(&game), vec![(0, 2), (1, 0), (1, 2), (2, 0), (2, 1), (2, 2)]);
     }
 
     #[test]
-    fn it_finds_the_winning_position() {
+    fn it_finds_the_winning_moves() {
         let mut game = Game::new(Mark::X);
 
         game.play((0, 0));
@@ -159,7 +107,7 @@ mod tests {
         game.play((1, 0));
         game.play((2, 1));
 
-        assert_eq!(moves(&game), vec![(2, 0)]);
+        assert_eq!(moves(&game), vec![(1, 1), (1, 2), (2, 0), (2, 2)]);
     }
 
     #[test]
