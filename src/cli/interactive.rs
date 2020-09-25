@@ -1,11 +1,7 @@
 use std::io::Write;
 
-use crate::ai;
 use crate::cli::Player;
-use crate::game::{ Error, Game };
-use crate::grid::{ Cell, Grid, Position };
-use crate::mark::Mark;
-use crate::referee::Outcome;
+use crate::core::{ ai, Cell, Game, Grid, Mark, Outcome, PlayError, Position };
 
 pub fn run(first: Mark, x: Player, o: Player) {
     println!("{}", format_intro());
@@ -55,8 +51,8 @@ fn play_one_turn(game: &mut Game, humans: u32, current: Player) {
 
                 if let Some(error) = game.play(pos) {
                     match error {
-                        Error::OutOfBounds => println!("Try again, that position is out of bounds"),
-                        Error::Unavailable => println!("Try again, that position is already taken")
+                        PlayError::OutOfBounds => println!("Try again, that position is out of bounds"),
+                        PlayError::Unavailable => println!("Try again, that position is already taken")
                     }
                 } else {
                     break;

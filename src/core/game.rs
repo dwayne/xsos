@@ -1,6 +1,6 @@
-use crate::grid::{ Grid, Position };
-use crate::mark::Mark;
-use crate::referee::{ self, Outcome };
+use crate::core::grid::{ Grid, Position };
+use crate::core::mark::Mark;
+use crate::core::referee::{ self, Outcome };
 
 #[derive(Clone)]
 pub struct Game {

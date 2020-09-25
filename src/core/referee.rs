@@ -1,5 +1,5 @@
-use crate::grid::Grid;
-use crate::mark::Mark;
+use crate::core::grid::Grid;
+use crate::core::mark::Mark;
 
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum Outcome {
