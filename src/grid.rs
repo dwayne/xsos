@@ -1,4 +1,4 @@
-use crate::core::mark::Mark;
+use crate::mark::Mark;
 
 const SIZE: usize = 3;
 const NCELLS: usize = SIZE * SIZE;

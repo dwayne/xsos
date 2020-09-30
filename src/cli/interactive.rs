@@ -1,7 +1,7 @@
 use std::io::Write;
 
 use crate::cli::Player;
-use crate::core::{ ai, Cell, Game, Grid, Mark, Outcome, PlayError, Position };
+use crate::{ ai, Cell, Game, Grid, Mark, Outcome, PlayError, Position };
 
 pub fn run(first: Mark, x: Player, o: Player) {
     println!("{}", format_intro());

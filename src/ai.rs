@@ -1,9 +1,9 @@
 use rand::seq::SliceRandom;
 use rand::thread_rng;
 
-use crate::core::game::Game;
-use crate::core::grid::Position;
-use crate::core::referee::Outcome;
+use crate::game::Game;
+use crate::grid::Position;
+use crate::referee::Outcome;
 
 pub fn random_move(game: &Game) -> Position {
     let mut rng = thread_rng();
@@ -75,7 +75,7 @@ fn score(outcome: Outcome) -> i8 {
 #[cfg(test)]
 mod tests {
     use super::*;
-    use crate::core::mark::Mark;
+    use crate::mark::Mark;
 
     #[test]
     fn it_finds_the_blocking_move_to_avoid_losing() {

@@ -1,6 +1,6 @@
-use crate::core::grid::{ Grid, Position };
-use crate::core::mark::Mark;
-use crate::core::referee::{ self, Outcome };
+use crate::grid::{ Grid, Position };
+use crate::mark::Mark;
+use crate::referee::{ self, Outcome };
 
 #[derive(Clone)]
 pub struct Game {
@@ -34,7 +34,7 @@ impl Game {
         self.grid = Grid::new();
 
         if let State::GameOver(Outcome::Squash) = self.state {
-            self.turn = self.turn.next();
+            self.turn = self.turn.swap();
         }
 
         self.state = State::Play;
@@ -62,7 +62,7 @@ impl Game {
 
         match referee::evaluate(&self.grid, self.turn) {
             None => {
-                self.turn = self.turn.next();
+                self.turn = self.turn.swap();
                 self.state = State::Play;
             },
             Some(outcome) => {

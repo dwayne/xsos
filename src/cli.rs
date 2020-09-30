@@ -1,6 +1,6 @@
 use structopt::StructOpt;
 
-use crate::core::Mark;
+use crate::Mark;
 
 mod interactive;
 mod noninteractive;

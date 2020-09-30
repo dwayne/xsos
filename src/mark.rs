@@ -1,5 +1,6 @@
 use std::fmt;
 
+/// Either an `X` or an `O` can be marked on a Tic-tac-toe grid's cell.
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum Mark {
     X,
@@ -7,7 +8,20 @@ pub enum Mark {
 }
 
 impl Mark {
-    pub fn next(&self) -> Self {
+    /// Exchanges one mark for the other.
+    ///
+    /// # Examples
+    ///
+    /// ```
+    /// use xsos::Mark;
+    ///
+    /// let x = Mark::X;
+    /// let o = Mark::O;
+    ///
+    /// assert_eq!(x.swap(), o);
+    /// assert_eq!(o.swap(), x);
+    /// ```
+    pub fn swap(&self) -> Self {
         match self {
             Self::X => Self::O,
             Self::O => Self::X
@@ -21,20 +35,5 @@ impl fmt::Display for Mark {
             Self::X => write!(f, "x"),
             Self::O => write!(f, "o")
         }
-    }
-}
-
-#[cfg(test)]
-mod tests {
-    use super::*;
-
-    #[test]
-    fn next_x_returns_o() {
-        assert_eq!(Mark::X.next(), Mark::O);
-    }
-
-    #[test]
-    fn next_o_returns_x() {
-        assert_eq!(Mark::O.next(), Mark::X);
     }
 }

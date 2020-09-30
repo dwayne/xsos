@@ -1,6 +1,6 @@
 use std::io::Write;
 
-use crate::core::{ ai, Game, Mark, Outcome };
+use crate::{ ai, Game, Mark, Outcome };
 
 pub fn run(first: Mark, rounds: u8) {
     let mut game = Game::new(first);
