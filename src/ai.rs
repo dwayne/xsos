@@ -11,7 +11,7 @@ pub fn random_move(game: &Game) -> Position {
 }
 
 pub fn moves(game: &Game) -> Vec<Position> {
-    let positions = game.grid().available_positions().collect::<Vec<_>>();
+    let positions = game.grid().unmarked_positions().collect::<Vec<_>>();
 
     match positions.len() {
         0 | 1 | 9 => positions,
@@ -24,7 +24,7 @@ fn find_best_moves(game: &mut Game) -> Vec<Position> {
         let mut value = i8::MIN;
         let mut positions = Vec::new();
 
-        for pos in game.grid().available_positions() {
+        for pos in game.grid().unmarked_positions() {
             let mut next_game = game.clone();
 
             next_game.play(pos);
@@ -51,7 +51,7 @@ fn negamax(game: &mut Game, color: i8) -> i8 {
         None => {
             let mut value = i8::MIN;
 
-            for pos in game.grid().available_positions() {
+            for pos in game.grid().unmarked_positions() {
                 let mut next_game = game.clone();
 
                 next_game.play(pos);

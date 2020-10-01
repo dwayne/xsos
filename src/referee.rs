@@ -55,11 +55,11 @@ mod tests {
     fn evaluate_detects_a_win() {
         let mut grid = Grid::new();
 
-        grid.set((0, 0), Mark::X);
-        grid.set((1, 0), Mark::O);
-        grid.set((0, 1), Mark::X);
-        grid.set((1, 1), Mark::O);
-        grid.set((0, 2), Mark::X);
+        grid.mark((0, 0), Mark::X);
+        grid.mark((1, 0), Mark::O);
+        grid.mark((0, 1), Mark::X);
+        grid.mark((1, 1), Mark::O);
+        grid.mark((0, 2), Mark::X);
 
         assert_eq!(evaluate(&grid, Mark::X), Some(Outcome::Win));
     }
@@ -68,15 +68,15 @@ mod tests {
     fn evaluate_detects_a_squash() {
         let mut grid = Grid::new();
 
-        grid.set((0, 0), Mark::X);
-        grid.set((1, 1), Mark::O);
-        grid.set((0, 1), Mark::X);
-        grid.set((0, 2), Mark::O);
-        grid.set((2, 0), Mark::X);
-        grid.set((1, 0), Mark::O);
-        grid.set((1, 2), Mark::X);
-        grid.set((2, 2), Mark::O);
-        grid.set((2, 1), Mark::X);
+        grid.mark((0, 0), Mark::X);
+        grid.mark((1, 1), Mark::O);
+        grid.mark((0, 1), Mark::X);
+        grid.mark((0, 2), Mark::O);
+        grid.mark((2, 0), Mark::X);
+        grid.mark((1, 0), Mark::O);
+        grid.mark((1, 2), Mark::X);
+        grid.mark((2, 2), Mark::O);
+        grid.mark((2, 1), Mark::X);
 
         assert_eq!(evaluate(&grid, Mark::X), Some(Outcome::Squash));
     }

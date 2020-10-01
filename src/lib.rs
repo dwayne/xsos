@@ -5,7 +5,7 @@ mod mark;
 mod referee;
 
 pub use game::{ Error as PlayError, Game };
-pub use grid::{ Cell, Grid, Position };
+pub use grid::{ Cell, Cells, Grid, Position, UnmarkedPositions };
 pub use mark::Mark;
 pub use referee::Outcome;
 

@@ -1,6 +1,6 @@
 use std::fmt;
 
-/// Either an `X` or an `O` can be marked on a Tic-tac-toe grid's cell.
+/// An `X` or `O`.
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum Mark {
     X,
@@ -8,7 +8,7 @@ pub enum Mark {
 }
 
 impl Mark {
-    /// Exchanges one mark for the other.
+    /// Exchanges one `Mark` for the other.
     ///
     /// # Examples
     ///

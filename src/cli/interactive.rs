@@ -100,7 +100,7 @@ fn read_position(grid: &Grid, show_hint: bool) -> Position {
         Some(pos) => pos,
         None => {
             if show_hint {
-                let (r, c) = first_available_position(grid);
+                let (r, c) = first_unmarked_position(grid);
 
                 println!("Try again, but this time enter a position in the format \"r c\",");
                 println!("where 1 <= r <= 3 and 1 <= c <= 3, for e.g. \"{} {}\"", r + 1, c + 1);
@@ -125,8 +125,8 @@ fn parse_position(s: &str) -> Option<Position> {
     }
 }
 
-fn first_available_position(grid: &Grid) -> Position {
-    grid.available_positions().next().unwrap()
+fn first_unmarked_position(grid: &Grid) -> Position {
+    grid.unmarked_positions().next().unwrap()
 }
 
 fn read_input(prompt: &str) -> String {

@@ -43,7 +43,7 @@ impl Game {
     pub fn play(&mut self, pos: Position) -> Option<Error> {
         if self.is_playing() {
             if Grid::in_bounds(pos) {
-                if self.grid.is_available(pos) {
+                if self.grid.is_unmarked_at(pos) {
                     self.unchecked_play(pos);
                     None
                 } else {
@@ -58,7 +58,7 @@ impl Game {
     }
 
     fn unchecked_play(&mut self, pos: Position) {
-        self.grid.set(pos, self.turn);
+        self.grid.mark(pos, self.turn);
 
         match referee::evaluate(&self.grid, self.turn) {
             None => {
