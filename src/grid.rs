@@ -19,7 +19,7 @@ const NCELLS: usize = SIZE * SIZE;
 /// [`Grid`]: ./struct.Grid.html
 pub type Position = (usize, usize);
 
-/// An area within a [`Grid`] that may be marked with an `X` or `O`.
+/// An area within a [`Grid`] that may be marked with a [`Mark`].
 ///
 /// # Examples
 ///
@@ -29,11 +29,12 @@ pub type Position = (usize, usize);
 /// // A cell that is marked with an X.
 /// let cell: Cell = Some(Mark::X);
 ///
-/// // An umarked cell.
+/// // An unmarked cell.
 /// let cell: Cell = None;
 /// ```
 ///
 /// [`Grid`]: ./struct.Grid.html
+/// [`Mark`]: ./enum.Mark.html
 pub type Cell = Option<Mark>;
 
 /// A 3x3 Tic-tac-toe grid.
@@ -48,16 +49,17 @@ pub type Cell = Option<Mark>;
 /// </pre>
 #[derive(Clone)]
 pub struct Grid {
-    cells: [Cell; NCELLS]
+    cells: [Cell; NCELLS],
+    last: Option<Mark>
 }
 
 impl Grid {
     /// Creates a new empty `Grid`.
     pub fn new() -> Self {
-        Self { cells: [None; NCELLS] }
+        Self { cells: [None; NCELLS], last: None }
     }
 
-    /// Returns `true` if the given `Position` is within the bounds of a 3x3 grid, i.e. `0 <= r < 3` and `0 <= c < 3`.
+    /// Returns `true` if the given `Position` is within the bounds of a 3x3 grid, i.e. `r ∊ {0, 1, 2}` and `c ∊ {0, 1, 2}`.
     ///
     /// # Examples
     ///
@@ -74,7 +76,7 @@ impl Grid {
         r < SIZE && c < SIZE
     }
 
-    /// Marks a `Cell` at the given `Position` on this `Grid` with a `Mark`.
+    /// Marks a [`Cell`] at the given `Position` on this `Grid` with a `Mark`.
     ///
     /// # Examples
     ///
@@ -96,26 +98,40 @@ impl Grid {
     /// # Panics
     ///
     /// Panics if `Grid::in_bounds(p)` is `false`.
+    ///
+    /// [`Cell`]: ./type.Cell.html
     pub fn mark(&mut self, p: Position, m: Mark) {
         self.cells[to_index(p)] = Some(m);
+        self.last = Some(m);
     }
 
-    /// Returns `true` if the `Cell` at the given `Position` is marked.
+    /// Returns `true` if the [`Cell`] at the given `Position` is marked.
     ///
     /// # Panics
     ///
     /// Panics if `Grid::in_bounds(p)` is `false`.
+    ///
+    /// [`Cell`]: ./type.Cell.html
     pub fn is_marked_at(&self, p: Position) -> bool {
         !self.is_unmarked_at(p)
     }
 
-    /// Returns `true` if the `Cell` at the given `Position` is not marked.
+    /// Returns `true` if the [`Cell`] at the given `Position` is not marked.
     ///
     /// # Panics
     ///
     /// Panics if `Grid::in_bounds(p)` is `false`.
+    ///
+    /// [`Cell`]: ./type.Cell.html
     pub fn is_unmarked_at(&self, p: Position) -> bool {
         self.cells[to_index(p)].is_none()
+    }
+
+    /// Returns the last `Mark`, if any, to be marked on a [`Cell`].
+    ///
+    /// [`Cell`]: ./type.Cell.html
+    pub fn last_mark(&self) -> Option<Mark> {
+        self.last
     }
 
     /// Returns an iterator over the positions of the unmarked cells in this `Grid`.

@@ -33,7 +33,7 @@ impl Game {
     pub fn renew(&mut self) {
         self.grid = Grid::new();
 
-        if let State::GameOver(Outcome::Squash) = self.state {
+        if let State::GameOver(Outcome::Draw) = self.state {
             self.turn = self.turn.swap();
         }
 
@@ -60,7 +60,7 @@ impl Game {
     fn unchecked_play(&mut self, pos: Position) {
         self.grid.mark(pos, self.turn);
 
-        match referee::evaluate(&self.grid, self.turn) {
+        match referee::evaluate(&self.grid) {
             None => {
                 self.turn = self.turn.swap();
                 self.state = State::Play;
@@ -162,7 +162,7 @@ mod tests {
             &Some(Mark::X), &Some(Mark::O), &Some(Mark::O),
             &Some(Mark::O), &Some(Mark::X), &Some(Mark::O)
         ]);
-        assert_eq!(game.outcome().unwrap(), Outcome::Squash);
+        assert_eq!(game.outcome().unwrap(), Outcome::Draw);
     }
 
     #[test]

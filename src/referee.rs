@@ -1,30 +1,31 @@
 use crate::grid::Grid;
-use crate::mark::Mark;
 
+/// A `Win` or `Draw`.
 #[derive(Debug, PartialEq, Eq, Clone, Copy)]
 pub enum Outcome {
     Win,
-    Squash
+    Draw
 }
 
-pub fn evaluate(grid: &Grid, mark: Mark) -> Option<Outcome> {
-    if is_win(grid, mark) {
+/// Determines the `Outcome`, if any, of a given `Grid`.
+pub fn evaluate(grid: &Grid) -> Option<Outcome> {
+    if is_win(grid) {
         Some(Outcome::Win)
-    } else if is_squash(grid) {
-        Some(Outcome::Squash)
+    } else if is_draw(grid) {
+        Some(Outcome::Draw)
     } else {
         None
     }
 }
 
-fn is_win(grid: &Grid, mark: Mark) -> bool {
+fn is_win(grid: &Grid) -> bool {
     let cells = grid.cells().collect::<Vec<_>>();
-    let c = Some(mark);
+    let c = grid.last_mark();
 
-    ARRANGEMENTS.iter().any(|&(i, j, k)| (cells[i], cells[j], cells[k]) == (&c, &c, &c))
+    c.is_some() && ARRANGEMENTS.iter().any(|&(i, j, k)| (cells[i], cells[j], cells[k]) == (&c, &c, &c))
 }
 
-fn is_squash(grid: &Grid) -> bool {
+fn is_draw(grid: &Grid) -> bool {
     grid.cells().all(Option::is_some)
 }
 
@@ -42,13 +43,13 @@ const ARRANGEMENTS: [(usize, usize, usize); 8] = [
 #[cfg(test)]
 mod tests {
     use super::*;
+    use crate::mark::Mark;
 
     #[test]
     fn evaluate_on_an_empty_grid_returns_none() {
         let grid = Grid::new();
 
-        assert!(evaluate(&grid, Mark::X).is_none());
-        assert!(evaluate(&grid, Mark::O).is_none());
+        assert!(evaluate(&grid).is_none());
     }
 
     #[test]
@@ -61,11 +62,11 @@ mod tests {
         grid.mark((1, 1), Mark::O);
         grid.mark((0, 2), Mark::X);
 
-        assert_eq!(evaluate(&grid, Mark::X), Some(Outcome::Win));
+        assert_eq!(evaluate(&grid), Some(Outcome::Win));
     }
 
     #[test]
-    fn evaluate_detects_a_squash() {
+    fn evaluate_detects_a_draw() {
         let mut grid = Grid::new();
 
         grid.mark((0, 0), Mark::X);
@@ -78,6 +79,6 @@ mod tests {
         grid.mark((2, 2), Mark::O);
         grid.mark((2, 1), Mark::X);
 
-        assert_eq!(evaluate(&grid, Mark::X), Some(Outcome::Squash));
+        assert_eq!(evaluate(&grid), Some(Outcome::Draw));
     }
 }

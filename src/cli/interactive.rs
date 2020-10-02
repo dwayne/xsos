@@ -74,7 +74,7 @@ fn handle_game_over(outcome: Outcome, player: Player, humans: u32, game: &Game) 
         (Outcome::Win, Player::Human, 2) => println!("Congratulations! {} won.", game.turn()),
         (Outcome::Win, Player::Human, 1) => println!("Congratulations! You won."),
         (Outcome::Win, Player::Computer, 1) => println!("The computer won. Better luck next time."),
-        (Outcome::Squash, _, _) => println!("Game squashed."),
+        (Outcome::Draw, _, _) => println!("Game drawn."),
         _ => unreachable!()
     }
 

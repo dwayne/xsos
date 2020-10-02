@@ -68,7 +68,7 @@ fn negamax(game: &mut Game, color: i8) -> i8 {
 fn score(outcome: Outcome) -> i8 {
     match outcome {
         Outcome::Win => 2,
-        Outcome::Squash => 1
+        Outcome::Draw => 1
     }
 }
 
