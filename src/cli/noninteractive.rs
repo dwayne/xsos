@@ -3,7 +3,7 @@ use std::io::Write;
 use crate::{ ai, Game, Mark, Outcome };
 
 pub fn run(first: Mark, rounds: u8) {
-    let mut game = Game::new(first);
+    let mut game = Game::start(first);
 
     for _ in 0..rounds {
         play_one_round(&mut game);
@@ -20,7 +20,7 @@ fn play_one_round(game: &mut Game) {
 
         if let Some(outcome) = game.outcome() {
             handle_game_over(outcome, game.turn());
-            game.renew();
+            game.restart();
             break;
         }
     }

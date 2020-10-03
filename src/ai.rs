@@ -1,7 +1,7 @@
 use rand::seq::SliceRandom;
 use rand::thread_rng;
 
-use crate::game::Game;
+use crate::game::{ Game, unchecked_play };
 use crate::grid::Position;
 use crate::referee::Outcome;
 
@@ -27,7 +27,7 @@ fn find_best_moves(game: &mut Game) -> Vec<Position> {
         for pos in game.grid().unmarked_positions() {
             let mut next_game = game.clone();
 
-            next_game.play(pos);
+            unchecked_play(&mut next_game, pos);
 
             let next_value = negamax(&mut next_game, -1);
 
@@ -54,7 +54,7 @@ fn negamax(game: &mut Game, color: i8) -> i8 {
             for pos in game.grid().unmarked_positions() {
                 let mut next_game = game.clone();
 
-                next_game.play(pos);
+                unchecked_play(&mut next_game, pos);
 
                 value = std::cmp::max(value, color * negamax(&mut next_game, -color));
             }
@@ -79,7 +79,7 @@ mod tests {
 
     #[test]
     fn it_finds_the_blocking_move_to_avoid_losing() {
-        let mut game = Game::new(Mark::X);
+        let mut game = Game::start(Mark::X);
 
         game.play((0, 0));
         game.play((0, 2));
@@ -90,7 +90,7 @@ mod tests {
 
     #[test]
     fn it_has_no_good_moves_since_every_position_is_losing() {
-        let mut game = Game::new(Mark::X);
+        let mut game = Game::start(Mark::X);
 
         game.play((0, 0));
         game.play((0, 1));
@@ -101,7 +101,7 @@ mod tests {
 
     #[test]
     fn it_finds_the_winning_moves() {
-        let mut game = Game::new(Mark::X);
+        let mut game = Game::start(Mark::X);
 
         game.play((0, 0));
         game.play((0, 2));
@@ -113,7 +113,7 @@ mod tests {
 
     #[test]
     fn it_favors_winning_over_blocking() {
-        let mut game = Game::new(Mark::X);
+        let mut game = Game::start(Mark::X);
 
         game.play((2, 0));
         game.play((0, 2));

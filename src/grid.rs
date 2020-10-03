@@ -76,7 +76,7 @@ impl Grid {
         r < SIZE && c < SIZE
     }
 
-    /// Marks a [`Cell`] at the given `Position` on this `Grid` with a `Mark`.
+    /// Marks the [`Cell`] at the given `Position` on this `Grid` with a `Mark`.
     ///
     /// # Examples
     ///

@@ -6,7 +6,7 @@ use crate::{ ai, Cell, Game, Grid, Mark, Outcome, PlayError, Position };
 pub fn run(first: Mark, x: Player, o: Player) {
     println!("{}", format_intro());
 
-    let mut game = Game::new(first);
+    let mut game = Game::start(first);
     let humans = Player::count_humans(&[x, o]);
 
     loop {
@@ -16,7 +16,7 @@ pub fn run(first: Mark, x: Player, o: Player) {
         }
 
         if read_continue() {
-            game.renew();
+            game.restart();
         } else {
             break;
         }
@@ -52,7 +52,7 @@ fn play_one_turn(game: &mut Game, humans: u32, current: Player) {
                 if let Some(error) = game.play(pos) {
                     match error {
                         PlayError::OutOfBounds => println!("Try again, that position is out of bounds"),
-                        PlayError::Unavailable => println!("Try again, that position is already taken")
+                        PlayError::AlreadyMarked => println!("Try again, that position is already taken")
                     }
                 } else {
                     break;
